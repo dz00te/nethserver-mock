@@ -1,0 +1,49 @@
+#!/bin/bash 
+
+#
+# Copyright (C) 2014 Nethesis S.r.l.
+# http://www.nethesis.it - support@nethesis.it
+# 
+# This script is part of NethServer.
+# 
+# NethServer is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or any later version.
+# 
+# NethServer is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with NethServer.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+set -e
+specfile=$1
+export LANG=C
+specdir=$(dirname ${specfile})
+
+function have_git() {
+    which git &>/dev/null && [ -d "${GIT_DIR}" ]
+}
+
+if have_git; then
+    gitrev=$(git rev-parse HEAD)
+    source0=$(basename $(spectool -s 0 ${specfile} | cut -f 2 -d ' '))
+    prefix=$(basename ${source0} .tar.gz)
+
+    git archive --format=tar --prefix=${prefix}/ ${gitrev} | tar xf  -
+    tar -c -z --exclude-vcs --exclude='.gitignore' -f ${source0} ${prefix}
+    rm -rf ${prefix}
+    echo `basename $0` "[INFO] source0 git archive: ${source0}"
+else
+    echo `basename $0` '[WARNING] git not installed, or git repository not found!' >&2
+fi
+
+spectool -g ${specfile}
+
+if [ -f "${specdir}/SHA1SUM" ] && which sha1sum &>/dev/null; then
+   sha1sum -c "${specdir}/SHA1SUM"
+fi
