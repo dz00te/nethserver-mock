@@ -48,11 +48,15 @@ function have_git() {
 }
 
 if have_git; then
-    declare -a gitdesc
     gitdesc=($(git describe --tags --match "[0-9]*" --abbrev=7 HEAD 2>/dev/null | tr '-' ' '))
-    if [ "${gitdesc[1]}.${gitdesc[2]}" != "." ]; then
-	dist="${gitdesc[1]}.${gitdesc[2]}.${dist}"
-    fi
+else
+    gitdesc=()
+fi
+
+if [ "${#gitdesc[@]}" -gt 2 ]; then
+    commitn=${gitdesc[$((${#gitdesc[@]} - 2))]}
+    commitv=${gitdesc[((${#gitdesc[@]} - 1))]}
+    dist="${commitn}.${commitv}.${dist}"
     echo `basename $0` "[INFO] git describe: ${gitdesc[*]}" >&2               
 else
     echo "" >&2
