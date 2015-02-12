@@ -23,6 +23,7 @@
 set -e
 
 specfile=$1
+tmpfiles=()
 
 if [ -z "${specfile}" ]; then
     exec >&2
@@ -47,6 +48,27 @@ function have_git() {
     which git &>/dev/null && [ -d "${GIT_DIR}" ]
 }
 
+function cleanup() {
+    if [[ ${#tmpfiles[@]} > 0 ]]; then
+        echo "Cleaning up temporary files.."
+	rm -vf "${tmpfiles[@]}"
+    fi
+}
+
+function prepend_git_changelog() {
+    local commitn=$1
+    local specfile=$2
+    local tmplog=$(mktemp  "$(dirname ${specfile})"/.tmpXXXXXXX.gitlog)
+    tmpfiles+=("${tmplog}")
+    git --no-pager log --format='* %ct %an <%ae> git-%h%n- %s%d%n' -n "${commitn}" \
+	    | LANG=C perl -MPOSIX -n -e 'if ($_ =~ /^\* (\d+)/) { $tstamp = POSIX::strftime("%a %b %d %Y", localtime($1)); $_ =~ s/^\* $1/* $tstamp/ } print $_' \
+	    | sed 's/%/%%/g;' > ${tmplog}
+    sed -i $'/^%changelog/ {\nr '${tmplog}$'\nq\n}' ${specfile}
+}
+
+trap cleanup EXIT SIGTERM
+
+
 if have_git; then
     gitdesc=($(git describe --tags --match "[0-9]*" --abbrev=7 HEAD 2>/dev/null | tr '-' ' '))
 else
@@ -57,6 +79,12 @@ if [ "${#gitdesc[@]}" -gt 2 ]; then
     commitn=${gitdesc[$((${#gitdesc[@]} - 2))]}
     commitv=${gitdesc[((${#gitdesc[@]} - 1))]}
     dist="${commitn}.${commitv}.${dist}"
+
+    tmpspec=$(mktemp  "$(dirname ${specfile})"/.tmpXXXXXXX.spec)
+    tmpfiles+=("${tmpspec}")
+    cp -f "${specfile}" "${tmpspec}"
+    prepend_git_changelog ${commitn} ${tmpspec}
+    specfile=${tmpspec}
     echo `basename $0` "[INFO] git describe: ${gitdesc[*]}" >&2               
 else
     echo "" >&2
@@ -66,3 +94,4 @@ make-srpm ${specfile}
 srpm=$(basename "$(grep '^Wrote: ' build.log | tail -1 )")
 mock -D "dist .${dist}" \
      --resultdir=. -r ${mockcfg} ${srpm}
+
