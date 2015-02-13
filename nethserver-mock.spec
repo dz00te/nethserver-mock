@@ -1,5 +1,5 @@
 Name:           nethserver-mock
-Version:        0.0.3
+Version:        0.0.4
 Release:        1%{?dist}
 Summary:        RPM build automation scripts for NethServer packages
 BuildArch:	noarch
@@ -36,6 +36,7 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %{_bindir}/make-srpm
 %{_bindir}/sign-rpms
 %{_bindir}/prep-sources
+%{_bindir}/release-tag
 %config(noreplace) %{_sysconfdir}/mock/nethserver-6.5-x86_64.cfg
 %config(noreplace) %{_sysconfdir}/mock/nethserver-6.6-x86_64.cfg
 %doc COPYING
