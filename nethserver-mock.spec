@@ -1,6 +1,6 @@
 Name:           nethserver-mock
-Version:        0.0.4
-Release:        1%{?dist}
+Version: 1.1.0
+Release: 1%{?dist}
 Summary:        RPM build automation scripts for NethServer packages
 BuildArch:	noarch
 
@@ -42,6 +42,13 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %doc COPYING
 
 %changelog
+* Thu Mar 05 2015 Davide Principi <davide.principi@nethesis.it> - 1.1.0-1
+- nethserver-devbox replacements - Feature #3009 [NethServer]
+- build-rpm error on Fedora 20 - Bug #2879 [NethServer]
+- Devbox: missing rpmspec command - Bug #2770 [NethServer]
+- Changed URLs pointing to mirrorlist.nethserver.org
+- YUM groups from nethserver-updates
+
 * Thu Feb 12 2015 Davide Principi <davide.principi@nethesis.it> - 0.0.3-1
 - Insert development changelog from `git log` output
 
