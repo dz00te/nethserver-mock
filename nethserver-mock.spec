@@ -39,6 +39,7 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %{_bindir}/release-tag
 %config(noreplace) %{_sysconfdir}/mock/nethserver-6.5-x86_64.cfg
 %config(noreplace) %{_sysconfdir}/mock/nethserver-6.6-x86_64.cfg
+%config(noreplace) %{_sysconfdir}/mock/nethserver-7-x86_64.cfg
 %doc COPYING
 
 %changelog
