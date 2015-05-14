@@ -27,7 +27,7 @@ specdir=$(dirname ${specfile})
 
 function have_git() {
     source0=$(spectool -s 0 ${specfile} | cut -f 2 -d ' ')
-    which git &>/dev/null && [ -d "${GIT_DIR}" ] && ! [[ ${source0} = http://* ]]
+    which git &>/dev/null && [ -d "${GIT_DIR}" ] && ! [[ ${source0} = http://* || ${source0} = https://* || ${source0} = ftp://* ]]
 }
 
 if have_git; then
