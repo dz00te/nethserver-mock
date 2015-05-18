@@ -6,7 +6,7 @@ BuildArch:	noarch
 
 License:        GPLv3
 URL:            http://www.nethserver.org
-Source0:        https://github.com/nethesis/nethserver-mock/%{version}/%{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 
 Requires: mock => 1.1.41
 Requires: rpmdevtools >= 7.5
