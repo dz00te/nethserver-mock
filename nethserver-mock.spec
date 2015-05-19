@@ -1,5 +1,5 @@
 Name:           nethserver-mock
-Version: 1.1.1
+Version: 1.1.2
 Release: 1%{?dist}
 Summary:        RPM build automation scripts for NethServer packages
 BuildArch:	noarch
@@ -44,6 +44,9 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %doc COPYING
 
 %changelog
+* Tue May 19 2015 Giacomo Sanchietti <giacomo.sanchietti@nethesis.it> - 1.1.2-1
+- Support git submodules in package creation - Enhancement #3118 [NethServer]
+
 * Fri Apr 03 2015 Davide Principi <davide.principi@nethesis.it> - 1.1.1-1
 - Ignore git repo if source0 starts with http://
 
