@@ -60,9 +60,14 @@ function prepend_git_changelog() {
     local specfile=$2
     local tmplog=$(mktemp  "$(dirname ${specfile})"/.tmpXXXXXXX.gitlog)
     tmpfiles+=("${tmplog}")
-    git --no-pager log --format='* %ct %an <%ae> git-%h%n- %s%d%n' -n "${commitn}" \
-	    | LANG=C perl -MPOSIX -n -e 'if ($_ =~ /^\* (\d+)/) { $tstamp = POSIX::strftime("%a %b %d %Y", localtime($1)); $_ =~ s/^\* $1/* $tstamp/ } print $_' \
-	    | sed 's/%/%%/g;' > ${tmplog}
+    (
+         changelog_date=$(date +"%a %b %d %Y")
+         packager_name=$(git config --get user.name)
+         packager_email=$(git config --get user.email)
+         echo "* ${changelog_date} ${packager_name} <${packager_email}> - ${dist}"
+         git --no-pager log --format='- %s (%an <%ae>)' -n "${commitn}"
+    ) | sed 's/%/%%/g;' > ${tmplog}
+
     sed -i $'/^%changelog/ {\nr '${tmplog}$'\nq\n}' ${specfile}
 }
 
