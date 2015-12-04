@@ -101,7 +101,7 @@ trap cleanup_temporary_files EXIT SIGTERM
 git_changelog=$(git --no-pager log --format='%s' ${commitn:+-n ${commitn}} )
 
 # prepare the header line
-echo "* ${changelog_timestamp} ${git_user_name} <${git_user_email}> - ${tag}-1" >> ${tmp_changelog}
+echo "* ${changelog_timestamp} ${git_user_name} <${git_user_email}> - ${tag:-NEWTAG}-1" >> ${tmp_changelog}
 
 # fetch
 for ID in $(echo ${git_changelog}  | grep -o -E '\#[0-9]+' | cut -c 2- | sort -r | uniq); do
@@ -156,7 +156,7 @@ if ! git commit -m "Release ${tag}" ${spec_file}; then
 fi
   
 # add git tag (rollback working copy if fails..)
-if ! sed -e '1 d' -e '2,$ s/^ - //' ${tmp_changelog} | git tag ${git_tag_opts} "${tag}" -F -; then
+if ! sed -e "1 {s/^.*$/Release ${tag}/; G;}"  ${tmp_changelog} | git tag ${git_tag_opts} "${tag}" -F -; then
     git reset --hard HEAD^
     exit 6
 fi
