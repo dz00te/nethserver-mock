@@ -41,6 +41,7 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-6.5-x86_64.cfg
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-6.6-x86_64.cfg
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-6.7-x86_64.cfg
+%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-6.8-x86_64.cfg
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-7-x86_64.cfg
 %doc COPYING
 
