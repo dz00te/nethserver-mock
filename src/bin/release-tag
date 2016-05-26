@@ -106,7 +106,16 @@ echo "* ${changelog_timestamp} ${git_user_name} <${git_user_email}> - ${tag:-NEW
 # fetch
 for ID in $(echo ${git_changelog}  | grep -o -E '\#[0-9]+' | cut -c 2- | sort -r | uniq); do
     echo -n "[NOTICE] Fetching issue ${ID}...: "
-    curl -s -k ${issuetracker_url}/issues/${ID}.json | python -c '
+    if $(( ${ID} > 5000 )); then
+        curl -s https://api.github.com/repos/NethServer/dev/issues/${ID} | python -c '
+import sys
+import json
+
+issue = json.load(sys.stdin)
+print "- %s #%s" % (issue["title"], issue["number"])
+' | tee -a ${tmp_changelog} | sed 's/^- //'        
+    else 
+        curl -s -k ${issuetracker_url}/issues/${ID}.json | python -c '
 import sys
 import json
 
@@ -114,6 +123,7 @@ issue = json.load(sys.stdin)["issue"]
 print "- %s - %s #%s [%s]%s" % (issue["subject"], issue["tracker"]["name"], issue["id"], issue["project"]["name"], "" if issue["status"]["name"] in ["CLOSED", "VERIFIED"] else " !!%s" % issue["status"]["name"])
 
 ' | tee -a ${tmp_changelog} | sed 's/^- //'
+    fi
 done
 
 echo -n "
