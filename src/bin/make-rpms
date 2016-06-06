@@ -41,7 +41,7 @@ fi
 
 export LANG=C
 export dist=${dist:-ns6}
-export mockcfg=${mockcfg:-nethserver-6.7-x86_64}
+export mockcfg=${mockcfg:-nethserver-6-x86_64}
 export GIT_DIR=${GIT_DIR:-`dirname ${specfile}`/.git}
 
 function have_git() {
