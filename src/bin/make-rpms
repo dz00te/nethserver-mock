@@ -25,6 +25,10 @@ set -e
 specfile=$1
 tmpfiles=()
 
+export LANG=C
+export dist=${dist:-ns7}
+export mockcfg=${mockcfg:-nethserver-7-x86_64}
+
 if [ -z "${specfile}" ]; then
     exec >&2
     echo "Build RPMs with mock"
@@ -33,15 +37,12 @@ if [ -z "${specfile}" ]; then
     echo "    " $(basename $0) "filename.spec"
     echo ""
     echo "Sensible to the following environment variables:"
-    echo " - dist (ns6)"
-    echo " - mockcfg (nethserver-6.7-x86_64)"
+    echo " - dist (${dist})"
+    echo " - mockcfg (${mockcfg})"
     echo ""
     exit 1
 fi
 
-export LANG=C
-export dist=${dist:-ns6}
-export mockcfg=${mockcfg:-nethserver-6-x86_64}
 export GIT_DIR=${GIT_DIR:-`dirname ${specfile}`/.git}
 
 function have_git() {
