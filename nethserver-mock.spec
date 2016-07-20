@@ -14,6 +14,7 @@ Requires: git >= 1.7.1
 Requires: bash
 Requires: coreutils
 Requires: expect
+Requires: python-requests
 
 %description
 Provides build automation scripts for NethServer packages
@@ -39,6 +40,7 @@ install -vp src/mock/* %{buildroot}/%{_sysconfdir}/mock
 %{_bindir}/release-tag
 %{_bindir}/upload-rpms
 %{_bindir}/git-archive-all.sh
+%{_bindir}/issue-refs
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-6-x86_64.cfg
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/mock/nethserver-7-x86_64.cfg
 %doc COPYING
